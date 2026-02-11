@@ -6,10 +6,15 @@ Contacts are stored as tree nodes with the **name** as the key and the **phone n
 All operations (insert, delete, search, display) are implemented recursively without using built-in Python data structures like `dict`, `set`, or `list`.
 
 🛠 Features
+
 ● Add a new contact (name must be unique)
+
 ● Delete a contact by name
+
 ● Search for a contact by name
+
 ● Display all contacts in **alphabetical order** (Inorder Traversal)
+
 ● Console-based application
 
 🏗 Data Structure
