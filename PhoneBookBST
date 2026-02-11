@@ -1,0 +1,164 @@
+class ContactNode:
+    def __init__(self, name, phone):
+        self.name = name
+        self.phone = phone
+        self.left = None
+        self.right = None
+
+
+class PhoneBook:
+
+    def __init__(self):
+        self.root = None
+
+    def _valid_name(self, name):
+        if not name or name.strip() == "":
+            return False
+        for ch in name:
+            if not ch.isalpha():
+                return False
+        return True
+
+    def insert(self, name, phone):
+
+        if not self._valid_name(name):
+            print("Invalid name. Only English letters allowed.")
+            return
+
+        if self.search(name):
+            print("Contact already exists.")
+            return
+
+        self.root = self._insert_recursive(self.root, name, phone)
+        print("Contact added successfully.")
+
+    def _insert_recursive(self, node, name, phone):
+        if node is None:
+            return ContactNode(name, phone)
+
+        if name < node.name:
+            node.left = self._insert_recursive(node.left, name, phone)
+        else:
+            node.right = self._insert_recursive(node.right, name, phone)
+
+        return node
+
+    def search(self, name):
+        return self._search_recursive(self.root, name)
+
+    def _search_recursive(self, node, name):
+        if node is None:
+            return None
+
+        if name == node.name:
+            return node
+
+        if name < node.name:
+            return self._search_recursive(node.left, name)
+        else:
+            return self._search_recursive(node.right, name)
+
+    def search_contact(self, name):
+        result = self.search(name)
+        if result:
+            print("Contact Found:")
+            print("Name:", result.name)
+            print("Phone:", result.phone)
+        else:
+            print("Contact not found.")
+
+    def delete(self, name):
+
+        if not self.search(name):
+            print("Contact not found.")
+            return
+
+        self.root = self._delete_recursive(self.root, name)
+        print("Contact deleted successfully.")
+
+    def _delete_recursive(self, node, name):
+
+        if node is None:
+            return None
+
+        if name < node.name:
+            node.left = self._delete_recursive(node.left, name)
+
+        elif name > node.name:
+            node.right = self._delete_recursive(node.right, name)
+
+        else:
+            if node.left is None and node.right is None:
+                return None
+
+            if node.left is None:
+                return node.right
+            if node.right is None:
+                return node.left
+
+            successor = self._min_value_node(node.right)
+            node.name = successor.name
+            node.phone = successor.phone
+            node.right = self._delete_recursive(node.right, successor.name)
+
+        return node
+
+    def _min_value_node(self, node):
+        current = node
+        while current.left is not None:
+            current = current.left
+        return current
+
+    def display(self):
+        if self.root is None:
+            print("PhoneBook is empty.")
+            return
+
+        print("Contacts (Alphabetical Order):")
+        self._inorder(self.root)
+
+    def _inorder(self, node):
+        if node:
+            self._inorder(node.left)
+            print("Name:", node.name, "| Phone:", node.phone)
+            self._inorder(node.right)
+
+def main():
+    phonebook = PhoneBook()
+
+    while True:
+        print("\n====== PhoneBook BST System ======")
+        print("1. Add Contact")
+        print("2. Delete Contact")
+        print("3. Search Contact")
+        print("4. Display All Contacts")
+        print("5. Exit")
+
+        choice = input("Select option: ").strip()
+
+        if choice == "1":
+            name = input("Enter Name: ").strip()
+            phone = input("Enter Phone: ").strip()
+            phonebook.insert(name, phone)
+
+        elif choice == "2":
+            name = input("Enter Name to Delete: ").strip()
+            phonebook.delete(name)
+
+        elif choice == "3":
+            name = input("Enter Name to Search: ").strip()
+            phonebook.search_contact(name)
+
+        elif choice == "4":
+            phonebook.display()
+
+        elif choice == "5":
+            print("Exiting system...")
+            break
+
+        else:
+            print("Invalid option.")
+
+
+if __name__ == "__main__":
+    main()
